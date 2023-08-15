@@ -23,7 +23,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<_ContentIncludedByDefault Remove="Areas\Admin\Views\Company\Index.cshtml" />
 		<_ContentIncludedByDefault Remove="Areas\Admin\Views\Category\Create.cshtml" />
+		<_ContentIncludedByDefault Remove="Areas\Admin\Views\Company\Upsert.cshtml" />
 		<_ContentIncludedByDefault Remove="Areas\Customer\Views\Home\Details.cshtml" />
 	</ItemGroup>
 
@@ -38,6 +40,14 @@
 
 	<ItemGroup>
 	  <UpToDateCheckInput Remove="Areas\Customer\Views\Home\Details.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Areas\Admin\Views\Company\Index.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Areas\Admin\Views\Company\Upsert.cshtml" />
 	</ItemGroup>
 
 
