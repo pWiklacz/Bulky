@@ -16,6 +16,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.9" />
+		<PackageReference Include="Stripe.net" Version="42.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -26,6 +27,7 @@
 		<_ContentIncludedByDefault Remove="Areas\Admin\Views\Company\Index.cshtml" />
 		<_ContentIncludedByDefault Remove="Areas\Admin\Views\Category\Create.cshtml" />
 		<_ContentIncludedByDefault Remove="Areas\Admin\Views\Company\Upsert.cshtml" />
+		<_ContentIncludedByDefault Remove="Areas\Customer\Views\Cart\Index.cshtml" />
 		<_ContentIncludedByDefault Remove="Areas\Customer\Views\Home\Details.cshtml" />
 	</ItemGroup>
 
@@ -48,6 +50,10 @@
 
 	<ItemGroup>
 	  <UpToDateCheckInput Remove="Areas\Admin\Views\Company\Upsert.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Areas\Customer\Views\Cart\Index.cshtml" />
 	</ItemGroup>
 
 
