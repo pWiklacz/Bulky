@@ -1,13 +1,11 @@
-﻿using Bulky.DataAccess.Repository.IRepository;
-using Bulky.Models;
+﻿using System.Diagnostics;
+using System.Security.Claims;
 using Bulky.DataAccess.Repository.IRepository;
 using Bulky.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 
-namespace BulkyBookWeb.Areas.Customer.Controllers
+namespace BulkyWeb.Areas.Customer.Controllers
 {
     [Area("Customer")]
     public class HomeController : Controller
