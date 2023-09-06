@@ -3,6 +3,8 @@
 ## Introduction
 
 Bulky is a web application developed as part of a course project. It serves as a book shop where users can browse, search for, and purchase books online. This repository contains the source code and files required to run the Bulky web application.
+Here is a link for a course site:
+https://www.udemy.com/course/complete-aspnet-core-21-course/
 
 ## Features
 
@@ -20,6 +22,7 @@ Before you can run the Bulky web application, you will need the following:
 - Visual Studio with ASP.NET development tools.
 - SQL Server or another compatible database server.
 - .NET Core runtime installed.
+- **Stripe Account**: You must have a Stripe account to process payments. If you don't have one, you can sign up for a free account at [Stripe](https://stripe.com).
 
 ## Getting Started
 
@@ -33,17 +36,33 @@ Before you can run the Bulky web application, you will need the following:
 
 3. Modify the connection string in `appsettings.json` to point to your database server.
 
-4. Build the project and resolve any dependencies.
+4. To configure the application to work with your Stripe account, follow these steps:
 
-5. Run the database migrations to create the necessary tables:
+ - Open the `appsettings.json` file in the project.
+
+ - Locate the section for Stripe API keys:
+
+   ```json
+   "Stripe": {
+       "PublicKey": "YOUR_PUBLIC_KEY",
+       "SecretKey": "YOUR_SECRET_KEY"
+   }
+
+- Replace "YOUR_PUBLIC_KEY" and "YOUR_SECRET_KEY" with your actual Stripe API keys.
+
+- Save the appsettings.json file.
+
+5. Build the project and resolve any dependencies.
+
+6. Run the database migrations to create the necessary tables:
 
    ```shell
    dotnet ef database update
    ```
 
-6. Start the application in Visual Studio.
+7. Start the application in Visual Studio.
 
-7. Access the web application through your preferred web browser at `http://localhost:port` (the port number may vary).
+8. Access the web application through your preferred web browser at `http://localhost:port` (the port number may vary).
 
 ## Usage
 
