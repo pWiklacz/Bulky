@@ -10,9 +10,11 @@ https://www.udemy.com/course/complete-aspnet-core-21-course/
 
 - User-friendly book browsing and searching.
 - User registration and authentication.
+- Login with FaceBook or Microsoft accounts.
 - Shopping cart functionality to add and manage selected books.
 - Checkout process for purchasing books.
 - Admin panel for managing books, categories, and users.
+- Admin panel for managing orders and payments.
 - Role-based access control (admin and regular users).
 
 ## Prerequisites
