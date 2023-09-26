@@ -8,14 +8,17 @@ using System.Text.Encodings.Web;
 using Bulky.DataAccess.Repository.IRepository;
 using Bulky.Models;
 using Bulky.Utility;
+using Bulky.Utility.Mail;
+using Elfie.Serialization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
+using Stripe;
+using IEmailSender = Bulky.Utility.Mail.IEmailSender;
 
 namespace BulkyWeb.Areas.Identity.Pages.Account
 {
@@ -29,6 +32,7 @@ namespace BulkyWeb.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _environment;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
@@ -37,7 +41,8 @@ namespace BulkyWeb.Areas.Identity.Pages.Account
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork, 
+            IWebHostEnvironment environment)
         {
             _roleManager = roleManager;
             _userManager = userManager;
@@ -47,6 +52,7 @@ namespace BulkyWeb.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _unitOfWork = unitOfWork;
+            _environment = environment;
         }
 
         /// <summary>
@@ -123,14 +129,6 @@ namespace BulkyWeb.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            if (!_roleManager.RoleExistsAsync(SD.Role_Customer).GetAwaiter().GetResult())
-            {
-                _roleManager.CreateAsync(new IdentityRole(SD.Role_Customer)).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(SD.Role_Employee)).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(SD.Role_Company)).GetAwaiter().GetResult();
-            }
-
             Input = new()
             {
                 RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
@@ -152,7 +150,7 @@ namespace BulkyWeb.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+        ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
@@ -194,9 +192,22 @@ namespace BulkyWeb.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    string templateFolderPath = Path.Combine(_environment.ContentRootPath, "..", "Bulky.Utility", "Mail", "EmailTemplates");
+                    string templateFilePath = Path.Combine(templateFolderPath, "ConfirmEmail.html");
+                    string emailTemplate = await System.IO.File.ReadAllTextAsync(templateFilePath);
+                    emailTemplate = emailTemplate.Replace("{{UserName}}", Input.Name);
+                    emailTemplate = emailTemplate.Replace("{{BackUrl}}", HtmlEncoder.Default.Encode(callbackUrl!));
 
+                    var email = new Email
+                    {
+                        To = Input.Email,
+                        RecipientName = Input.Name,
+                        Subject = "Confirm your email",
+                        Body = emailTemplate,
+                        IsHtml = true
+                    };
+
+                    await _emailSender.SendEmailAsync(email);
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });

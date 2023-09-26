@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Bulky.Utility;
 using Bulky.Models;
+using IEmailSender = Bulky.Utility.Mail.IEmailSender;
+using Bulky.Utility.Mail;
 
 namespace BulkyWeb.Areas.Identity.Pages.Account
 {
@@ -190,8 +192,15 @@ namespace BulkyWeb.Areas.Identity.Pages.Account
                             values: new { area = "Identity", userId = userId, code = code },
                             protocol: Request.Scheme);
 
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        var email = new Email
+                        {
+                            To = Input.Email,
+                            RecipientName = Input.Name,
+                            Subject = "Confirm your email",
+                            Body = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>."
+                        };
+
+                        await _emailSender.SendEmailAsync(email);
 
                         // If account confirmation is required, we need to show the link if we don't have a real email sender
                         if (_userManager.Options.SignIn.RequireConfirmedAccount)
