@@ -33,14 +33,21 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
 });
 
-builder.Services.AddAuthentication().AddFacebook(opt =>
-{
-    opt.AppId = builder.Configuration.GetSection("Facebook:AppId").Get<string>()!;
-    opt.AppSecret = builder.Configuration.GetSection("Facebook:AppSecret").Get<string>()!;
-});
+builder.Services.AddAuthentication()
+    .AddFacebook(opt =>
+    {
+        opt.AppId = builder.Configuration.GetSection("Facebook:AppId").Get<string>()!;
+        opt.AppSecret = builder.Configuration.GetSection("Facebook:AppSecret").Get<string>()!;
+    })
+    .AddMicrosoftAccount(opt =>
+    {
+        opt.ClientId = builder.Configuration.GetSection("MicrosoftAcc:ClientId").Get<string>()!;
+        opt.ClientSecret = builder.Configuration.GetSection("MicrosoftAcc:ClientSecret").Get<string>()!;
+    });
 
 builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options => {
+builder.Services.AddSession(options =>
+{
     options.IdleTimeout = TimeSpan.FromMinutes(100);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
