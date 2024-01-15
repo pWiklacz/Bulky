@@ -31,7 +31,7 @@ Before you can run the Bulky web application, you will need the following:
 1. Clone this repository to your local machine:
 
    ```shell
-   git clone https://github.com/your-username/bulky.git
+   git clone https://github.com/pWiklacz/bulky.git
    ```
 
 2. Open the project in Visual Studio.
